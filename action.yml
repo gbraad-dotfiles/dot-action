@@ -14,7 +14,7 @@ runs:
   steps:
     - name: Execute dot-command
       id: dot-run
-      shell: zsh {0}
+      shell: bash
       run: |
         # Ensure dotfiles exists
         if [ ! -d "$HOME/.dotfiles" ]; then
