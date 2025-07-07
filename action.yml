@@ -1,0 +1,28 @@
+name: "gbraad's Dotfiles `dot` Action"
+description: 'Wrapper for dot command execution on GitHub runners'
+author: "Gerard Braad <me@gbraad.nl>"
+inputs:
+  run:
+    description: 'Commands to run in ZSh'
+    required: true
+outputs:
+  exit_code:
+    description: 'The exit code of the command'
+    value: ${{ steps.dot-run.outputs.exit_code }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Execute dot-command
+      id: dot-run
+      shell: zsh {0}
+      run: |
+        # Ensure dotfiles exists
+        if [ ! -d "$HOME/.dotfiles" ]; then
+          git clone https://github.com/gbraad-dotfiles/upstream.git ~/.dotfiles --depth 2
+        fi
+
+        # Run the user-provided commands
+        "$HOME/.dotfiles/activate.sh" ${{ inputs.run }}
+        
+        # Store the exit code as an output
+        echo "exit_code=$?" >> $GITHUB_OUTPUT
