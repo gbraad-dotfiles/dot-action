@@ -5,6 +5,10 @@ inputs:
   run:
     description: 'Commands to run in ZSh'
     required: true
+  upstream:
+    description: "Whether to use the upstream repository when dotfiles not available"
+    required: false
+    default: "false"
 outputs:
   exit_code:
     description: 'The exit code of the command'
@@ -18,7 +22,11 @@ runs:
       run: |
         # Ensure dotfiles exists
         if [ ! -d "$HOME/.dotfiles" ]; then
-          git clone https://github.com/gbraad-dotfiles/upstream.git ~/.dotfiles --depth 2
+          if [ "${{ inputs.upstream }}" = "true" ]; then
+            git clone https://github.com/gbraad-dotfiles/upstream.git ~/.dotfiles --depth 2
+          else
+            git clone https://github.com/gbraad/dotfiles-stable.git ~/.dotfiles --depth 2
+          fi         
         fi
 
         # Run the user-provided commands
