@@ -30,7 +30,12 @@ runs:
         fi
 
         # Run the user-provided commands
-        "$HOME/.dotfiles/activate.sh" "${{ inputs.run }}"
+        TEMP_SCRIPT=$(mktemp)
+        trap 'rm -f "$TEMP_SCRIPT"' EXIT
+        echo '#!/usr/bin/env zsh' > "$TEMP_SCRIPT"
+        echo "${{ inputs.run }}" >> "$TEMP_SCRIPT"
+        chmod +x "$TEMP_SCRIPT"
+        "$HOME/.dotfiles/activate.sh" "$TEMP_SCRIPT"
         
         # Store the exit code as an output
         echo "exit_code=$?" >> $GITHUB_OUTPUT
