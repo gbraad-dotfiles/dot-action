@@ -30,7 +30,7 @@ runs:
         fi
 
         # Run the user-provided commands
-        "$HOME/.dotfiles/activate.sh" ${{ inputs.run }}
+        "$HOME/.dotfiles/activate.sh" "${{ inputs.run }}"
         
         # Store the exit code as an output
         echo "exit_code=$?" >> $GITHUB_OUTPUT
