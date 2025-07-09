@@ -21,20 +21,20 @@ runs:
       shell: bash
       run: |
         # Ensure dotfiles exists
-        if [ ! -d "$HOME/.dotfiles" ]; then
+        if [ ! -d "${HOME}/.dotfiles" ]; then
           if [ "${{ inputs.upstream }}" = "true" ]; then
-            git clone https://github.com/gbraad-dotfiles/upstream.git ~/.dotfiles --depth 2
+            git clone https://github.com/gbraad-dotfiles/upstream.git ${HOME}/.dotfiles --depth 2
           else
-            git clone https://github.com/gbraad/dotfiles-stable.git ~/.dotfiles --depth 2
+            git clone https://github.com/gbraad/dotfiles-stable.git ${HOME}/.dotfiles --depth 2
           fi         
         fi
 
         # Run the user-provided commands
         TEMP_SCRIPT=$(mktemp)
-        trap 'rm -f "$TEMP_SCRIPT"' EXIT
-        echo "${{ inputs.run }}" >> "$TEMP_SCRIPT"
+        echo "${{ inputs.run }}" >> ${TEMP_SCRIPT}
         # source instead of spawning a new shell
-        "$HOME/.dotfiles/activate.sh" -c "source $TEMP_SCRIPT"
+        "${HOME}/.dotfiles/activate.sh" -c "source ${TEMP_SCRIPT}"
+        rm -f ${TEMP_SCRIPT}
         
         # Store the exit code as an output
         echo "exit_code=$?" >> $GITHUB_OUTPUT
