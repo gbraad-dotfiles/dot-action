@@ -40,6 +40,7 @@ runs:
 
         # source instead of spawning a new shell
         if [ -n "${{ inputs.as_user }}" ]; then
+          chmod o+r ${TEMP_SCRIPT}
           sudo -u "${{ inputs.as_user }}" "${HOME}/.dotfiles/activate.sh" -c source ${TEMP_SCRIPT}
         else
           "${HOME}/.dotfiles/activate.sh" -c source ${TEMP_SCRIPT}
