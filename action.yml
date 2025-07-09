@@ -5,6 +5,10 @@ inputs:
   run:
     description: 'Commands to run in ZSh'
     required: true
+  as_user:
+    description: "User to run dot as"
+    required: false
+    default: ""
   upstream:
     description: "Whether to use the upstream repository when dotfiles not available"
     required: false
@@ -33,8 +37,13 @@ runs:
         TEMP_SCRIPT=$(mktemp)
         trap 'rm -f "${TEMP_SCRIPT}"' EXIT
         echo "${{ inputs.run }}" >> ${TEMP_SCRIPT}
+
         # source instead of spawning a new shell
-        "${HOME}/.dotfiles/activate.sh" -c source ${TEMP_SCRIPT}
+        if [ -n "${{ inputs.as_user }}" ]; then
+          sudo -u "${{ inputs.as_user }}" "${HOME}/.dotfiles/activate.sh" -c source ${TEMP_SCRIPT}
+        else
+          "${HOME}/.dotfiles/activate.sh" -c source ${TEMP_SCRIPT}
+        fi
         
         # Store the exit code as an output
         echo "exit_code=$?" >> $GITHUB_OUTPUT
