@@ -31,12 +31,10 @@ runs:
 
         # Run the user-provided commands
         TEMP_SCRIPT=$(mktemp)
+        trap 'rm -f "${TEMP_SCRIPT}"' EXIT
         echo "${{ inputs.run }}" >> ${TEMP_SCRIPT}
-        ls -al /tmp
         # source instead of spawning a new shell
-        "${HOME}/.dotfiles/activate.sh" -c "ls -al /tmp; source ${TEMP_SCRIPT}"
-        ls -al /tmp
-        rm -f ${TEMP_SCRIPT}
+        "${HOME}/.dotfiles/activate.sh" -c source ${TEMP_SCRIPT}
         
         # Store the exit code as an output
         echo "exit_code=$?" >> $GITHUB_OUTPUT
